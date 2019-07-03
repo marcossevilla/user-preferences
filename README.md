@@ -1,4 +1,4 @@
-# user_preferences
+# User Preferences
 
 A new Flutter project.
 
