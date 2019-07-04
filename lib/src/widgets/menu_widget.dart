@@ -1,9 +1,12 @@
 import 'package:user_preferences/src/pages/home_page.dart';
 import 'package:user_preferences/src/pages/settings_page.dart';
+import 'package:user_preferences/src/shared_pref/pref_user.dart';
 
 import 'package:flutter/material.dart';
 
 class MenuWidget extends StatelessWidget {
+  final prefs = new UserPreferences();
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -11,20 +14,21 @@ class MenuWidget extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Container(
-              padding: EdgeInsets.zero,
-            ),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/header.png'),
-                fit: BoxFit.cover,
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.all(50.0),
+                color: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
+                child: Text(
+                  'The Menu',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ),
           ListTile(
             leading: Icon(
               Icons.home,
-              color: Colors.blue,
+              color: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
             ),
             title: Text('Home'),
             onTap: () =>
@@ -33,7 +37,7 @@ class MenuWidget extends StatelessWidget {
           ListTile(
             leading: Icon(
               Icons.party_mode,
-              color: Colors.blue,
+              color: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
             ),
             title: Text('Party Mode'),
             onTap: () {},
@@ -41,7 +45,7 @@ class MenuWidget extends StatelessWidget {
           ListTile(
             leading: Icon(
               Icons.people,
-              color: Colors.blue,
+              color: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
             ),
             title: Text('People'),
             onTap: () {},
@@ -49,7 +53,7 @@ class MenuWidget extends StatelessWidget {
           ListTile(
             leading: Icon(
               Icons.settings,
-              color: Colors.blue,
+              color: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
             ),
             title: Text('Settings'),
             onTap: () =>

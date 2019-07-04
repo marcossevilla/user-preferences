@@ -1,6 +1,6 @@
 import 'package:user_preferences/src/widgets/menu_widget.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_preferences/src/shared_pref/pref_user.dart';
 
 import 'package:flutter/material.dart';
 
@@ -12,30 +12,32 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _secondaryColor = false;
-  int _genre = 1;
+  bool _secondaryColor;
+  int _genre;
 
   // * for text
-  String _name = '';
   TextEditingController _textController;
+
+  // * for handling preferences
+  final prefs = new UserPreferences();
 
   @override
   void initState() {
     super.initState();
-    loadPrefs();
-    _textController = new TextEditingController(text: _name);
+
+    // last page
+    prefs.lastPage = SettingsPage.routeName;
+    // read genre
+    _genre = prefs.genre;
+    // read sec color
+    _secondaryColor = prefs.secondaryColor;
+
+    // loadPrefs();
+    _textController = new TextEditingController(text: prefs.name);
   }
 
-  // * set last preferences of settings if loads again
-  loadPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _genre = prefs.getInt('genre');
-    setState(() {});
-  }
-
-  _setSelectedRadio(int value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('genre', value);
+  _setSelectedRadio(int value) {
+    prefs.genre = value;
     _genre = value;
     setState(() {});
   }
@@ -59,14 +61,23 @@ class _SettingsPageState extends State<SettingsPage> {
                 style: TextStyle(
                   fontSize: 45.0,
                   fontWeight: FontWeight.bold,
+                  color: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
                 ),
               ),
             ),
             Divider(),
             SwitchListTile(
               value: _secondaryColor,
+              activeColor: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
+              inactiveTrackColor:
+                  (prefs.secondaryColor) ? Colors.teal : Colors.blue,
               title: Text('Secondary color'),
-              onChanged: (value) => setState(() => _secondaryColor = value),
+              onChanged: (value) {
+                setState(() {
+                  _secondaryColor = value;
+                  prefs.secondaryColor = value;
+                });
+              },
             ),
             Divider(),
             RadioListTile(
@@ -74,12 +85,14 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text('Male'),
               groupValue: _genre,
               onChanged: _setSelectedRadio,
+              activeColor: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
             ),
             RadioListTile(
               value: 2,
               title: Text('Female'),
               groupValue: _genre,
               onChanged: _setSelectedRadio,
+              activeColor: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
             ),
             Divider(),
             Container(
@@ -89,8 +102,19 @@ class _SettingsPageState extends State<SettingsPage> {
                 decoration: InputDecoration(
                   labelText: 'Name',
                   helperText: 'Here you put your actual name',
+                  labelStyle: TextStyle(
+                    color: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
+                    ),
+                  ),
                 ),
-                onChanged: (value) {},
+                onChanged: (value) {
+                  prefs.name = value;
+                },
+                cursorColor: (prefs.secondaryColor) ? Colors.teal : Colors.blue,
               ),
             ),
           ],
